@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use App\DTO\Client\CreateClient\CreateClientFromRequestInput;
@@ -94,15 +93,15 @@ class Client implements UserInterface
         string $mail,
         string $phoneNumber,
         string $password,
-        EncoderFactoryInterface $encoderFactory)
-    {
+        EncoderFactoryInterface $encoderFactory
+    ) {
         $this->id = Uuid::v4()->__toString();
         $this->createdAt = time();
         $this->name = $name;
         $this->username = $username;
         $this->mail = $mail;
         $this->phoneNumber = $phoneNumber;
-        $this->password = $encoderFactory->getEncoder(Client::class)->encodePassword($password,'');
+        $this->password = $encoderFactory->getEncoder(Client::class)->encodePassword($password, '');
         $this->roles = ['ROLE_CLIENT'];
     }
 
@@ -149,15 +148,17 @@ class Client implements UserInterface
         return $this->createdAt;
     }
 
-    public function getRoles():array
+    public function getRoles(): array
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
         return array_unique($roles);
     }
 
-    public static function createClientFromRequest(CreateClientFromRequestInput $clientDTO, EncoderFactoryInterface $encoderFactory)
-    {
+    public static function createClientFromRequest(
+        CreateClientFromRequestInput $clientDTO,
+        EncoderFactoryInterface $encoderFactory
+    ) {
         return new self(
             $clientDTO->name,
             $clientDTO->username,
@@ -172,16 +173,16 @@ class Client implements UserInterface
     {
         $this->name = $clientDTO->name;
         $this->username = $clientDTO->username;
-        $this->phoneNumber=$clientDTO->phoneNumber;
+        $this->phoneNumber = $clientDTO->phoneNumber;
         $this->mail = $clientDTO->mail;
-        $this->password=$clientDTO->password;
+        $this->password = $clientDTO->password;
     }
 
-    public static function createClientFromFixtures (
+    public static function createClientFromFixtures(
         CreateClientFromRequestInput $clientDTO,
         EncoderFactoryInterface $encoderFactory,
-        ? array $role=["ROLE_CLIENT"])
-    {
+        ?array $role = ["ROLE_CLIENT"]
+    ) {
         $client = new self(
             $clientDTO->name,
             $clientDTO->username,

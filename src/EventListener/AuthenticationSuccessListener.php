@@ -1,9 +1,6 @@
 <?php
 
-
 namespace App\EventListener;
-
-
 
 use App\Entity\Client;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;

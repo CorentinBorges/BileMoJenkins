@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Validator\Constraints;
-
 
 use Symfony\Component\Validator\Constraint;
 
@@ -15,6 +13,6 @@ class TwoDecimalMax extends Constraint
 
     public function validatedBy()
     {
-        return \get_class($this).'Validator';
+        return \get_class($this) . 'Validator';
     }
 }

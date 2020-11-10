@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller;
-
 
 use App\Cache\PhoneCache;
 use App\DTO\Phone\CreatePhone\CreatePhoneFromRequestInput;
@@ -24,7 +22,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security as SecureSwag;
 use OpenApi\Annotations as OA;
-
 
 class PhoneController extends BaseEntityController
 {
@@ -48,9 +45,8 @@ class PhoneController extends BaseEntityController
         PhoneRepository $phoneRepository,
         Security $security,
         PhoneCache $phoneCache
-    )
-    {
-        parent::__construct($serializer,$em,$validator,$security);
+    ) {
+        parent::__construct($serializer, $em, $validator, $security);
         $this->phoneRepository = $phoneRepository;
         $this->cache = new FilesystemAdapter();
         $this->phoneCache = $phoneCache;
@@ -119,33 +115,29 @@ class PhoneController extends BaseEntityController
      * @param Request $request
      * @return Response
      */
-    public function allPhones( JsonResponder $jsonResponder, Request $request)
+    public function allPhones(JsonResponder $jsonResponder, Request $request)
     {
-        if ($request->query->get('model') ) {
+        if ($request->query->get('model')) {
             $listJson = $this->phoneCache->allPhonesCache(
-                'phones_json' . $request->query->get('model'),
+                'phones_json' . $request->query->get('model') . $_SERVER['APP_ENV'],
                 3600,
                 $request
             );
-
-        }
-        elseif ($request->query->get('brand')){
+        } elseif ($request->query->get('brand')) {
             $listJson = $this->phoneCache->allPhonesCache(
-                'phones_json' . $request->query->get('brand'),
+                'phones_json' . $request->query->get('brand') . $_SERVER['APP_ENV'],
                 3600,
                 $request
             );
-        }
-        elseif ($request->query->get('page')){
+        } elseif ($request->query->get('page')) {
             $listJson = $this->phoneCache->allPhonesCache(
-                'phones_json' . $request->query->get('page'),
+                'phones_json' . $request->query->get('page') . $_SERVER['APP_ENV'],
                 3600,
                 $request
             );
-        }
-        else{
+        } else {
             $listJson = $this->phoneCache->allPhonesCache(
-                'all_phones_json'.$_SERVER['APP_ENV'],
+                'all_phones_json' . $_SERVER['APP_ENV'],
                 3600,
                 $request
             );
@@ -280,10 +272,10 @@ class PhoneController extends BaseEntityController
             'json'
         );
 
-        $errors=$this->validator->validate($phoneObject);
-        if($errors->count() > 0 ){
+        $errors = $this->validator->validate($phoneObject);
+        if ($errors->count() > 0) {
             $listErrors = ViolationBuilder::build($errors);
-            return JsonResponder::responder(json_encode($listErrors),Response::HTTP_BAD_REQUEST);
+            return JsonResponder::responder(json_encode($listErrors), Response::HTTP_BAD_REQUEST);
         }
 
         $phone = Phone::createFromRequest($phoneObject);
@@ -355,19 +347,24 @@ class PhoneController extends BaseEntityController
         $newPhone = $this->serializer->deserialize(
             $request->getContent(),
             UpdatePhoneFromRequestInput::class,
-            'json',[AbstractNormalizer::OBJECT_TO_POPULATE=>$phoneDTO]
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $phoneDTO]
         );
 
         $errors = $this->validator->validate($newPhone);
         if ($errors->count() > 0) {
-            $listErrors=ViolationBuilder::build($errors);
+            $listErrors = ViolationBuilder::build($errors);
             return JsonResponder::responder(json_encode($listErrors), Response::HTTP_BAD_REQUEST);
         }
 
         $phone->updateFromRequest($phoneDTO);
         $this->em->flush();
 
-        return JsonResponder::responder(null, Response::HTTP_NO_CONTENT, ['Location' => '/api/phones/' . $phone->getId()]);
+        return JsonResponder::responder(
+            null,
+            Response::HTTP_NO_CONTENT,
+            ['Location' => '/api/phones/' . $phone->getId()]
+        );
     }
 
     /**
@@ -418,6 +415,6 @@ class PhoneController extends BaseEntityController
     {
         $this->em->remove($phone);
         $this->em->flush();
-        return JsonResponder::responder(null,Response::HTTP_NO_CONTENT);
+        return JsonResponder::responder(null, Response::HTTP_NO_CONTENT);
     }
 }

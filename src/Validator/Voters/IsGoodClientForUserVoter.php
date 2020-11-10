@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Validator\Voters;
-
 
 use App\Entity\Client;
 use App\Entity\User;
@@ -11,9 +9,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class IsGoodClientForUserVoter extends Voter
 {
-    const DELETE = 'delete';
-    const EDIT = 'edit';
-    const SHOW = 'show';
+    public const DELETE = 'delete';
+    public const EDIT = 'edit';
+    public const SHOW = 'show';
 
     protected function supports(string $attribute, $subject)
     {
@@ -30,7 +28,7 @@ class IsGoodClientForUserVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
     {
-        $client=$token->getUser();
+        $client = $token->getUser();
 
         if (!$client instanceof Client) {
             return false;

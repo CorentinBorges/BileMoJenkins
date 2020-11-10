@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repository;
-
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -17,7 +15,5 @@ class UserRepository extends ServiceEntityRepository
 
     public function findUserOfOneClient(string $clientId)
     {
-
     }
-
 }

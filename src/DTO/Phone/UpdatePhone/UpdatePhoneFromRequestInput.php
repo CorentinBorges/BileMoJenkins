@@ -1,13 +1,10 @@
 <?php
 
-
 namespace App\DTO\Phone\UpdatePhone;
-
 
 use App\DTO\Phone\PhoneFromRequestInput;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints as AcmeAssert;
-
 
 class UpdatePhoneFromRequestInput extends PhoneFromRequestInput
 {
@@ -24,4 +21,3 @@ class UpdatePhoneFromRequestInput extends PhoneFromRequestInput
         $this->id = $id;
     }
 }
-

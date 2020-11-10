@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\DTO\User\CreateUser;
-
 
 use App\DTO\User\UserFromRequestInput;
 use App\Entity\Client;

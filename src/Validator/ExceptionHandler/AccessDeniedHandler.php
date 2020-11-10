@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Validator\ExceptionHandler;
-
 
 use App\Responder\ExceptionResponder\AccessDeniedJsonResponder;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -21,7 +19,7 @@ class AccessDeniedHandler
         $this->security = $security;
     }
 
-    public static function build(Security $security,string $votersAttribute,object $votersSubject , $message)
+    public static function build(Security $security, string $votersAttribute, object $votersSubject, $message)
     {
         try {
             if (!$security->isGranted($votersAttribute, $votersSubject)) {
@@ -31,4 +29,4 @@ class AccessDeniedHandler
             AccessDeniedJsonResponder::build($exception);
         }
     }
-}   
+}

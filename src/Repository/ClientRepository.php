@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repository;
-
 
 use App\Entity\Client;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -17,7 +15,6 @@ class ClientRepository extends ServiceEntityRepository
 
     public function findAll()
     {
-        return $this->findBy(array(),array('createdAt'=>'ASC'));
+        return $this->findBy(array(), array('createdAt' => 'ASC'));
     }
-
 }

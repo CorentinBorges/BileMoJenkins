@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Cache;
-
 
 use App\Entity\Client;
 use App\Entity\User;
@@ -28,14 +26,14 @@ class UserCache
      */
     private $cache;
 
-    public function __construct(UserRepository $userRepository,SerializerInterface $serializer)
+    public function __construct(UserRepository $userRepository, SerializerInterface $serializer)
     {
         $this->userRepository = $userRepository;
         $this->serializer = $serializer;
         $this->cache = new FilesystemAdapter();
     }
 
-    public function allUserCache(string $itemName,int $expiredAfter,Client $client)
+    public function allUserCache(string $itemName, int $expiredAfter, Client $client)
     {
         /**
          * @var CacheItemInterface $element
@@ -44,7 +42,7 @@ class UserCache
 
         if (!$element->isHit()) {
             $usersList = $this->userRepository->findBy(['client' => $client]);
-            $dataToSet = $this->serializer->serialize($usersList, 'json',['groups'=>'list_users']);
+            $dataToSet = $this->serializer->serialize($usersList, 'json', ['groups' => 'list_users']);
             $element->set($dataToSet);
             $element->expiresAfter($expiredAfter);
             $this->cache->save($element);
@@ -54,13 +52,16 @@ class UserCache
 
     public function userDetailsCache(string $itemName, int $expiredAfter, User $user)
     {
+        if (strpos($itemName, 'test') && $this->cache->hasItem($itemName)) {
+            $this->cache->deleteItem($itemName);
+        }
+
         /**
          * @var CacheItemInterface $element
          */
         $element = $this->cache->getItem($itemName);
 
         if (!$element->isHit()) {
-
             $dataToSet = $this->serializer->serialize(
                 $user,
                 'json',
@@ -76,7 +77,7 @@ class UserCache
         return $element->get();
     }
 
-    public function findUserCache(string $itemName,int $expiredAfter,string $userId)
+    public function findUserCache(string $itemName, int $expiredAfter, string $userId)
     {
         /**
          * @var CacheItemInterface $element

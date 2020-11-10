@@ -4,6 +4,7 @@
 namespace App\Tests\Controller;
 
 
+use App\DTO\Phone\CreatePhone\CreatePhoneFromRequestInput;
 use App\Entity\Client;
 use App\Entity\Phone;
 use App\Tests\AbstractWebTestCase;
@@ -18,10 +19,44 @@ class PhoneControllerTest extends AbstractWebTestCase
         $response=$this->request('GET', '/api/phones', $this->client);
         $datasResponse = json_decode($response->getContent(), true);
         self::assertEquals(200, $response->getStatusCode());
+        self::assertCount(20, $datasResponse);
+    }
+
+    public function testListPhoneAppearWithPages()
+    {
+        $this->loadPhoneFixtures();
+        $this->loadClientFixture();
+        $response=$this->request('GET', '/api/phones?page=0', $this->client);
+        $datasResponse = json_decode($response->getContent(), true);
+        self::assertEquals(200, $response->getStatusCode());
         self::assertCount(10, $datasResponse);
     }
 
-    public function testListPhoneNotClient()
+    public function testListPhoneAppearWithBrand()
+    {
+        $this->loadPhoneFixtures();
+        $this->loadClientFixture();
+        $response=$this->request('GET', '/api/phones?brand=apple', $this->client);
+        $datasResponse = json_decode($response->getContent(), true);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertCount(9, $datasResponse);
+        self::assertStringContainsString('apple',$response->getContent());
+        self::assertStringNotContainsString('samsung',$response->getContent());
+    }
+
+    public function testListPhoneAppearWithModel()
+    {
+        $this->loadPhoneFixtures();
+        $this->loadClientFixture();
+        $response=$this->request('GET', '/api/phones?model=iphone2', $this->client);
+        $datasResponse = json_decode($response->getContent(), true);
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertCount(1, $datasResponse);
+        self::assertStringContainsString('iphone2',$response->getContent());
+
+    }
+
+    public function testListPhoneNoClient()
     {
         $response=$this->request('GET', '/api/phones');
         self::assertEquals(401, $response->getStatusCode());
@@ -46,7 +81,7 @@ class PhoneControllerTest extends AbstractWebTestCase
         self::assertEquals(200,$response->getStatusCode());
     }
 
-    public function testOnePhoneShownNotClient()
+    public function testOnePhoneShownNoClient()
     {
         $phone = $this->createPhone();
         $response = $this->request('GET', '/api/phones/'.$phone->getId());
@@ -229,6 +264,40 @@ class PhoneControllerTest extends AbstractWebTestCase
         $this->entityManager->flush();
         return $phone;
     }
+
+    protected function loadPhoneFixtures(){
+
+        for ($i=0; $i < 20; $i++) {
+            $phoneDTO = new CreatePhoneFromRequestInput();
+            $phoneDTO->description = $this->faker->text(500);
+            $phoneDTO->screenSize = $this->faker->randomFloat(2, 1.00, 7.00);
+            if ($i<=10) {
+                $phoneDTO->system = "android";
+                $phoneDTO->model = "galaxy S" . ($i + 1);
+                $phoneDTO->brand = "samsung";
+            }
+            elseif( $i>10){
+                $phoneDTO->system = "iOS";
+                $phoneDTO->model = "iphone" . ($i - 10 + 1);
+                $phoneDTO->brand = "apple";
+            }
+            else{
+                $phoneDTO->system = "android";
+                $phoneDTO->model = "P" . ($i + 1);
+                $phoneDTO->brand = "Huawei";
+            }
+
+            $phoneDTO->price = $this->faker->randomFloat(2, 10.00, 500.00);
+            $phoneDTO->color = $this->faker->safeColorName;
+            $phoneDTO->storage = 8 * $this->faker->numberBetween(1, 16);
+            $phone = Phone::createFromRequest($phoneDTO);
+
+            $this->entityManager->persist($phone);
+        }
+        $this->entityManager->flush();
+    }
+
+
 
 
     

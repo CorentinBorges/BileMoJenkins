@@ -1,15 +1,12 @@
 <?php
 
-
 namespace App\Controller;
-
 
 use App\Entity\Client;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 abstract class BaseEntityController
 {
@@ -41,12 +38,10 @@ abstract class BaseEntityController
         EntityManagerInterface $em,
         ValidatorInterface $validator,
         Security $security
-    )
-    {
+    ) {
         $this->security = $security;
         $this->serializer = $serializer;
         $this->em = $em;
         $this->validator = $validator;
     }
-
 }

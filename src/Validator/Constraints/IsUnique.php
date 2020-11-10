@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -10,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
  * @package App\Validator\Constraints
  * @Annotation
  */
-class isUnique extends Constraint
+class IsUnique extends Constraint
 {
     public $message = 'The {{ property }} "{{ value }}" already exist';
 
@@ -18,5 +17,4 @@ class isUnique extends Constraint
     {
         return get_class($this) . 'Validator';
     }
-
 }

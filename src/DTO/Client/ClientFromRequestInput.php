@@ -1,21 +1,18 @@
 <?php
 
-
 namespace App\DTO\Client;
-
 
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints as AcmeAssert;
 
-
 abstract class ClientFromRequestInput
 {
     /**
      * @var string
      * @Assert\NotNull()
-     * @AcmeAssert\isUnique()
+     * @AcmeAssert\IsUnique()
      * @Assert\NotBlank(message="Client must have a username")
      * @Assert\Type(type="string", message="Userame has to be string type")
      * @Assert\Length(max="64",maxMessage="Username can't exceed 64 characters")
@@ -25,7 +22,7 @@ abstract class ClientFromRequestInput
     /**
      * @var string
      * @Assert\NotNull()
-     * @AcmeAssert\isUnique()
+     * @AcmeAssert\IsUnique()
      * @Assert\NotBlank(message="Client must have a username")
      * @Assert\Type(type="string", message="Name has to be string type")
      * @Assert\Length(max="64",maxMessage="Name can't exceed 64 characters")
@@ -34,7 +31,7 @@ abstract class ClientFromRequestInput
 
     /**
      * @var string
-     * @AcmeAssert\isUnique()
+     * @AcmeAssert\IsUnique()
      * @Assert\NotNull()
      * @Assert\Email(message="mail not valid")
      * @Assert\NotBlank(message="Client must have a mail")
@@ -43,7 +40,7 @@ abstract class ClientFromRequestInput
 
     /**
      * @var string
-     * @AcmeAssert\isUnique()
+     * @AcmeAssert\IsUnique()
      * @Assert\NotNull()
      * @Assert\Type(type="string", message="Phone number has to be string type")
      * @Assert\NotBlank(message="Client must have a phoneNumber")
@@ -66,6 +63,4 @@ abstract class ClientFromRequestInput
      *     message="Password must have at least one Uppercase, one lowercase and one number")
      */
     public $password;
-
-
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Normalizers;
-
 
 use App\Entity\Phone;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -19,7 +17,7 @@ class PhoneNormalizer implements ContextAwareNormalizerInterface
      */
     private $security;
 
-    public function __construct(UrlGeneratorInterface $router, ObjectNormalizer $normalizer,Security $security)
+    public function __construct(UrlGeneratorInterface $router, ObjectNormalizer $normalizer, Security $security)
     {
         $this->router = $router;
         $this->normalizer = $normalizer;
@@ -30,21 +28,21 @@ class PhoneNormalizer implements ContextAwareNormalizerInterface
     {
         $data = $this->normalizer->normalize($phone, $format, $context);
 
-        if (in_array('list_phone',$context)) {
+        if (in_array('list_phone', $context)) {
             $data['_link']['self'] = $this->router->generate('detail_phone', [
-                'id'=>$phone->getId(),
+                'id' => $phone->getId(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);
         }
 
         if ($this->security->isGranted('admin_client')) {
-            if (in_array('detail_phone',$context)) {
+            if (in_array('detail_phone', $context)) {
                 $data['_link']['update'] = $this->router->generate('update_phone', [
-                    'id'=>$phone->getId(),
+                    'id' => $phone->getId(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
                 $data['_link']['delete'] = $this->router->generate('delete_phone', [
-                    'id'=>$phone->getId(),
+                    'id' => $phone->getId(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
-        }
+            }
         }
         // Here, add, edit, or delete some data:
         return $data;

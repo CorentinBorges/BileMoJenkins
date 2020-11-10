@@ -1,11 +1,8 @@
 <?php
 
-
 namespace App\DTO\User\UpdateUser;
 
-
 use App\DTO\User\UserFromRequestInput;
-
 
 class UpdateUserFromRequestInput extends UserFromRequestInput
 {
@@ -20,7 +17,4 @@ class UpdateUserFromRequestInput extends UserFromRequestInput
     {
         $this->id = $id;
     }
-
-
-
 }
