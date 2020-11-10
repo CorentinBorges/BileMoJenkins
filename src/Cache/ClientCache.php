@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Cache;
-
 
 use App\Entity\Client;
 use App\Repository\ClientRepository;
@@ -26,7 +24,7 @@ class ClientCache
      */
     private $cache;
 
-    public function __construct(ClientRepository $clientRepository,SerializerInterface $serializer)
+    public function __construct(ClientRepository $clientRepository, SerializerInterface $serializer)
     {
         $this->clientRepository = $clientRepository;
         $this->serializer = $serializer;
@@ -35,7 +33,7 @@ class ClientCache
 
     public function allClientCache(string $itemName, int $expiredAfter)
     {
-        if (strpos($itemName,'test') && $this->cache->hasItem($itemName)) {
+        if (strpos($itemName, 'test') && $this->cache->hasItem($itemName)) {
             $this->cache->deleteItem($itemName);
         }
 
@@ -46,7 +44,7 @@ class ClientCache
 
         if (!$element->isHit()) {
             $all = $this->clientRepository->findAll();
-            $dataToSet= $this->serializer->serialize($all, 'json',['groups'=>'list_client']);
+            $dataToSet = $this->serializer->serialize($all, 'json', ['groups' => 'list_client']);
             $element->set($dataToSet);
             $element->expiresAfter($expiredAfter);
             $this->cache->save($element);
@@ -54,7 +52,7 @@ class ClientCache
         return $element->get();
     }
 
-    public function clientDetailCache($itemName, int $expiredAfter,Client $client)
+    public function clientDetailCache($itemName, int $expiredAfter, Client $client)
     {
         /**
          * @var CacheItemInterface $element
@@ -62,7 +60,7 @@ class ClientCache
         $element = $this->cache->getItem($itemName);
 
         if (!$element->isHit()) {
-            $dataToSet = $this->serializer->serialize($client, 'json',['groups'=>'client_details']);
+            $dataToSet = $this->serializer->serialize($client, 'json', ['groups' => 'client_details']);
             $element->set($dataToSet);
             $element->expiresAfter($expiredAfter);
             $this->cache->save($element);

@@ -1,9 +1,7 @@
 <?php
 
-
 namespace App\Controller;
 
-use App\Cache\CacheBuilder;
 use App\Cache\ClientCache;
 use App\DTO\Client\CreateClient\CreateClientFromRequestInput;
 use App\DTO\Client\UpdateClient\UpdateClientFromRequestInput;
@@ -35,7 +33,14 @@ use OpenApi\Annotations as OA;
  *     description="OK",
  * )
  *
- * @SWG\Parameter( name="Authorization", in="header", required=true, type="string", default="Bearer TOKEN", description="Authorization" )
+ * @SWG\Parameter(
+ *     name="Authorization",
+ *     in="header",
+ *     required=true,
+ *     type="string",
+ *     default="Bearer TOKEN",
+ *     description="Authorization"
+ * )
  *
  * @OA\Tag (name="Doc")
  */
@@ -69,9 +74,8 @@ class ClientController extends BaseEntityController
         ClientRepository $clientRepository,
         Security $security,
         ClientCache $clientCache
-    )
-    {
-        parent::__construct($serializer,$em,$validator,$security);
+    ) {
+        parent::__construct($serializer, $em, $validator, $security);
         $this->clientRepository = $clientRepository;
         $this->clientCache = $clientCache;
     }
@@ -146,10 +150,10 @@ class ClientController extends BaseEntityController
         $errors = $this->validator->validate($clientDTO);
         if ($errors->count() > 0) {
             $errorList = ViolationBuilder::build($errors);
-            return JsonResponder::responder(json_encode($errorList),Response::HTTP_BAD_REQUEST);
+            return JsonResponder::responder(json_encode($errorList), Response::HTTP_BAD_REQUEST);
         }
 
-        $client = Client::createClientFromRequest($clientDTO,$encoderFactory);
+        $client = Client::createClientFromRequest($clientDTO, $encoderFactory);
 
         $this->em->persist($client);
         $this->em->flush();
@@ -157,9 +161,8 @@ class ClientController extends BaseEntityController
         return JsonResponder::responder(
             null,
             Response::HTTP_CREATED,
-            ['Location'=>'/api/clients/'.$client->getId()]
+            ['Location' => '/api/clients/' . $client->getId()]
         );
-
     }
 
     /**
@@ -228,19 +231,20 @@ class ClientController extends BaseEntityController
             $request->getContent(),
             UpdateClientFromRequestInput::class,
             'json',
-            [AbstractNormalizer::IGNORED_ATTRIBUTES=>['roles','id'],
-            AbstractNormalizer::OBJECT_TO_POPULATE=>$clientDTO]);
+            [AbstractNormalizer::IGNORED_ATTRIBUTES => ['roles','id'],
+            AbstractNormalizer::OBJECT_TO_POPULATE => $clientDTO]
+        );
 
         $errors = $this->validator->validate($newClient);
         if ($errors->count() > 0) {
-            $errorsList=ViolationBuilder::build($errors);
+            $errorsList = ViolationBuilder::build($errors);
             return JsonResponder::responder(json_encode($errorsList), Response::HTTP_BAD_REQUEST);
         }
 
         $client->updateClientFromRequest($clientDTO);
         $this->em->flush();
 
-        return JsonResponder::responder(null,Response::HTTP_NO_CONTENT);
+        return JsonResponder::responder(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -283,7 +287,7 @@ class ClientController extends BaseEntityController
      */
     public function clientList()
     {
-        $data = $this->clientCache->allClientCache('all_clients_json'.$_SERVER['APP_ENV'], 300);
+        $data = $this->clientCache->allClientCache('all_clients_json' . $_SERVER['APP_ENV'], 300);
         return JsonResponder::responder($data);
     }
 
@@ -349,7 +353,7 @@ class ClientController extends BaseEntityController
             "You can not see this client's details"
         );
 
-        $clientDetails=$this->clientCache->clientDetailCache(
+        $clientDetails = $this->clientCache->clientDetailCache(
             'client_json' . $client->getId(),
             3600,
             $client
@@ -405,6 +409,6 @@ class ClientController extends BaseEntityController
     {
         $this->em->remove($client);
         $this->em->flush();
-        return JsonResponder::responder(null,Response::HTTP_NO_CONTENT);
+        return JsonResponder::responder(null, Response::HTTP_NO_CONTENT);
     }
 }

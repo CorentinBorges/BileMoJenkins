@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\DataFixtures;
-
 
 use App\DTO\Phone\CreatePhone\CreatePhoneFromRequestInput;
 use App\Entity\Phone;
@@ -22,21 +20,19 @@ class PhoneFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $this->faker = Factory::create();
-        for ($i=0; $i < 30; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $phoneDTO = new CreatePhoneFromRequestInput();
             $phoneDTO->description = $this->faker->text(500);
             $phoneDTO->screenSize = $this->faker->randomFloat(2, 1.00, 7.00);
-            if ($i<10) {
+            if ($i < 10) {
                 $phoneDTO->system = "android";
                 $phoneDTO->model = "galaxy S" . ($i + 1);
                 $phoneDTO->brand = "samsung";
-            }
-            elseif( $i<20){
+            } elseif ($i < 20) {
                 $phoneDTO->system = "iOS";
                 $phoneDTO->model = "iphone" . ($i - 10 + 1);
                 $phoneDTO->brand = "apple";
-            }
-            else{
+            } else {
                 $phoneDTO->system = "android";
                 $phoneDTO->model = "P" . ($i + 1);
                 $phoneDTO->brand = "Huawei";

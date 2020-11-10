@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Cache;
-
 
 use App\Entity\Phone;
 use App\Handlers\PhoneHandler;
@@ -29,17 +27,17 @@ class PhoneCache
 
     public function __construct(
         SerializerInterface $serializer,
-        PhoneRepository $phoneRepository)
-    {
+        PhoneRepository $phoneRepository
+    ) {
         $this->serializer = $serializer;
         $this->phoneRepository = $phoneRepository;
         $this->cache = new FilesystemAdapter();
     }
 
-    public function allPhonesCache(string $itemName, int $expiredAfter,Request $request)
+    public function allPhonesCache(string $itemName, int $expiredAfter, Request $request)
     {
 
-        if (strpos($itemName,'test') && $this->cache->hasItem($itemName)) {
+        if (strpos($itemName, 'test') && $this->cache->hasItem($itemName)) {
             $this->cache->deleteItem($itemName);
         }
         /**
@@ -50,7 +48,7 @@ class PhoneCache
 
 
         if (!$element->isHit()) {
-            $listPhone= PhoneHandler::build($request, $this->phoneRepository);
+            $listPhone = PhoneHandler::build($request, $this->phoneRepository);
             $dataToSet = $this->serializer->serialize($listPhone, 'json', ['groups' => 'list_phone']);
             $element->set($dataToSet);
             $element->expiresAfter($expiredAfter);
@@ -60,7 +58,7 @@ class PhoneCache
         return $element->get();
     }
 
-    public function detailPhoneCache($itemName,int $expiredAfter,Phone $phone)
+    public function detailPhoneCache($itemName, int $expiredAfter, Phone $phone)
     {
         /**
          * @var CacheItemInterface $element
@@ -68,12 +66,11 @@ class PhoneCache
         $element = $this->cache->getItem($itemName);
 
         if (!$element->isHit()) {
-            $dataToSet = $this->serializer->serialize($phone, 'json',['groups'=>"detail_phone"]);
+            $dataToSet = $this->serializer->serialize($phone, 'json', ['groups' => "detail_phone"]);
             $element->set($dataToSet);
             $element->expiresAfter($expiredAfter);
             $this->cache->save($element);
         }
         return $element->get();
     }
-
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\DataFixtures;
-
 
 use App\DTO\User\CreateUser\CreateUserFromFixture;
 use App\Entity\Client;
@@ -23,11 +21,10 @@ class UserFixtures extends Fixture
     {
         $this->faker = Factory::create();
         for ($i = 0; $i < 30; $i++) {
-
             $userDTO = new CreateUserFromFixture();
             $userDTO->email = $this->faker->email;
             $userDTO->username = $this->faker->userName;
-            $userDTO->client = $this->getReference(Client::class.'_'.$this->faker->numberBetween(0,9));
+            $userDTO->client = $this->getReference(Client::class . '_' . $this->faker->numberBetween(0, 9));
             $userDTO->fullName = $this->faker->name;
 
             $user = User::createFromFixture($userDTO);

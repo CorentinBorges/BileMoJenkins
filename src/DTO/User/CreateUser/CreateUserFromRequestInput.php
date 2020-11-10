@@ -1,10 +1,6 @@
 <?php
 
-
 namespace App\DTO\User\CreateUser;
-
-
-
 
 use App\DTO\User\UserFromRequestInput;
 use App\Entity\Client;
@@ -12,7 +8,6 @@ use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 class CreateUserFromRequestInput extends UserFromRequestInput
 {
@@ -27,5 +22,4 @@ class CreateUserFromRequestInput extends UserFromRequestInput
     {
         $this->clientId = $clientId;
     }
-
 }

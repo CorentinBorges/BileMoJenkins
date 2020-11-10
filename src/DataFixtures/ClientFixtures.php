@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\DataFixtures;
-
 
 use App\DTO\Client\CreateClient\CreateClientFromRequestInput;
 use App\Entity\Client;
@@ -34,7 +32,6 @@ class ClientFixtures extends Fixture
         $this->faker = Factory::create();
 
         for ($i = 0; $i < 10; $i++) {
-
             $clientDTO = new CreateClientFromRequestInput();
             $clientDTO->name = $this->faker->company;
             $clientDTO->password = 'ClientBilemo0';
@@ -44,7 +41,7 @@ class ClientFixtures extends Fixture
 
             $client = Client::createClientFromFixtures($clientDTO, $this->encoderFactory);
 
-            $this->setReference(Client::class.'_'.$i,$client);
+            $this->setReference(Client::class . '_' . $i, $client);
             $manager->persist($client);
         }
 
@@ -55,9 +52,8 @@ class ClientFixtures extends Fixture
         $clientAdmin->mail = "bilemo@gmail.com";
         $clientAdmin->phoneNumber = $this->faker->phoneNumber;
 
-        $clientAdmin=Client::createClientFromFixtures($clientAdmin, $this->encoderFactory, ["ROLE_ADMIN"]);
+        $clientAdmin = Client::createClientFromFixtures($clientAdmin, $this->encoderFactory, ["ROLE_ADMIN"]);
         $manager->persist($clientAdmin);
         $manager->flush();
-
     }
 }

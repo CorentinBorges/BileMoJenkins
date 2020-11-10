@@ -1,9 +1,6 @@
 <?php
 
-
 namespace App\Entity;
-
-
 
 use App\DTO\Phone\CreatePhone\CreatePhoneFromRequestInput;
 use App\DTO\Phone\UpdatePhone\UpdatePhoneFromRequestInput;
@@ -109,13 +106,12 @@ class Phone
         int $storage,
         string $color,
         string $description
-    )
-    {
-        $this->id=Uuid::v4()->__toString();
+    ) {
+        $this->id = Uuid::v4()->__toString();
         $this->brand = $brand;
         $this->model = $model;
         $this->price = $price;
-        $this->system= $system;
+        $this->system = $system;
         $this->screenSize = $screenSize;
         $this->storage = $storage;
         $this->color = $color;
@@ -179,7 +175,6 @@ class Phone
             $phoneDTO->storage,
             $phoneDTO->color,
             $phoneDTO->description
-
         );
     }
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller;
-
 
 use App\Cache\CacheBuilder;
 use App\Cache\UserCache;
@@ -34,7 +32,7 @@ use OpenApi\Annotations as OA;
  * @package App\Controller
  * @IsGranted("ROLE_CLIENT")
  */
-class UserController Extends BaseEntityController
+class UserController extends BaseEntityController
 {
     /**
      * @var ClientRepository
@@ -68,9 +66,8 @@ class UserController Extends BaseEntityController
         UserRepository $userRepository,
         Security $security,
         UserCache $userCache
-    )
-    {
-        parent::__construct($serializer, $em, $validator,$security);
+    ) {
+        parent::__construct($serializer, $em, $validator, $security);
         $this->clientRepository = $clientRepository;
         $this->userRepository = $userRepository;
         $this->userCache = $userCache;
@@ -132,7 +129,7 @@ class UserController Extends BaseEntityController
             $client,
             "Those users are not yours, you can not access to them"
         );
-        $listJson = $this->userCache->allUserCache('users_json'.$client->getId().$_SERVER['APP_ENV'], 300, $client);
+        $listJson = $this->userCache->allUserCache('users_json' . $client->getId() . $_SERVER['APP_ENV'], 300, $client);
         return JsonResponder::responder($listJson);
     }
 
@@ -202,8 +199,8 @@ class UserController Extends BaseEntityController
         /**
          * @var User $user
          */
-        $user = $this->userCache->findUserCache('user' . $userId, 43200,$userId);
-        EntityNotFoundHandler::build($user,'User not found');
+        $user = $this->userCache->findUserCache('user' . $userId, 43200, $userId);
+        EntityNotFoundHandler::build($user, 'User not found');
         AccessDeniedHandler::build(
             $this->security,
             'show',
@@ -271,30 +268,36 @@ class UserController Extends BaseEntityController
      * @param Request $request
      * @return Response
      */
-    public function createUser(Client $client,Request $request)
+    public function createUser(Client $client, Request $request)
     {
         $userDTO = new CreateUserFromRequestInput();
         $userDTO->setClientId($client->getId());
         /**
          * @var CreateUserFromRequestInput $userObject
          */
-        $userObject=$this->serializer->deserialize(
+        $userObject = $this->serializer->deserialize(
             $request->getContent(),
             CreateUserFromRequestInput::class,
-            'json',[AbstractNormalizer::OBJECT_TO_POPULATE=>$userDTO]);
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $userDTO]
+        );
 
         $errors = $this->validator->validate($userDTO);
 
         if ($errors->count() > 0) {
             $listErrors = ViolationBuilder::build($errors);
-            return JsonResponder::responder(json_encode($listErrors),Response::HTTP_BAD_REQUEST);
+            return JsonResponder::responder(json_encode($listErrors), Response::HTTP_BAD_REQUEST);
         }
 
-        $user = User::createUserFromRequest($userObject,$this->clientRepository);
+        $user = User::createUserFromRequest($userObject, $this->clientRepository);
         $this->em->persist($user);
         $this->em->flush();
 
-        return JsonResponder::responder(null, Response::HTTP_CREATED,['Location'=>'/api/users/'.$user->getId()]);
+        return JsonResponder::responder(
+            null,
+            Response::HTTP_CREATED,
+            ['Location' => '/api/users/' . $user->getId()]
+        );
     }
 
     /**
@@ -368,7 +371,7 @@ class UserController Extends BaseEntityController
          * @var User $user
          */
         $user = $this->userRepository->findOneBy(['id' => $userId]);
-        EntityNotFoundHandler::build($user,'User not found');
+        EntityNotFoundHandler::build($user, 'User not found');
         AccessDeniedHandler::build(
             $this->security,
             'edit',
@@ -380,7 +383,8 @@ class UserController Extends BaseEntityController
         $newUser = $this->serializer->deserialize(
             $request->getContent(),
             UpdateUserFromRequestInput::class,
-            'json',[AbstractNormalizer::OBJECT_TO_POPULATE=>$userDTO]
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $userDTO]
         );
 
         $errors = $this->validator->validate($newUser);
@@ -392,9 +396,10 @@ class UserController Extends BaseEntityController
         $user->updateUserFromRequest($userDTO);
         $this->em->flush();
 
-        return JsonResponder::responder(null,
+        return JsonResponder::responder(
+            null,
             Response::HTTP_NO_CONTENT,
-            ['Location'=>'/api/users/'.$user->getId()]
+            ['Location' => '/api/users/' . $user->getId()]
         );
     }
 
@@ -451,13 +456,13 @@ class UserController Extends BaseEntityController
      * @return Response
      *
      */
-    public function deleteUser(Client $client,string $userId)
+    public function deleteUser(Client $client, string $userId)
     {
         /**
          * @var User $user
          */
         $user = $this->userRepository->findOneBy(['id' => $userId]);
-        EntityNotFoundHandler::build($user,'User not found');
+        EntityNotFoundHandler::build($user, 'User not found');
         AccessDeniedHandler::build(
             $this->security,
             'delete',
@@ -466,7 +471,6 @@ class UserController Extends BaseEntityController
         );
         $this->em->remove($user);
         $this->em->flush();
-        return JsonResponder::responder(null,Response::HTTP_NO_CONTENT);
+        return JsonResponder::responder(null, Response::HTTP_NO_CONTENT);
     }
-
 }

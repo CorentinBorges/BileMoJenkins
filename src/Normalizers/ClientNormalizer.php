@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Normalizers;
-
 
 use App\Entity\Client;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -19,7 +17,7 @@ class ClientNormalizer implements ContextAwareNormalizerInterface
      */
     private $security;
 
-    public function __construct(UrlGeneratorInterface $router, ObjectNormalizer $normalizer,Security $security)
+    public function __construct(UrlGeneratorInterface $router, ObjectNormalizer $normalizer, Security $security)
     {
         $this->router = $router;
         $this->normalizer = $normalizer;
@@ -30,19 +28,19 @@ class ClientNormalizer implements ContextAwareNormalizerInterface
     {
         $data = $this->normalizer->normalize($client, $format, $context);
 
-        if (in_array('list_client',$context)) {
+        if (in_array('list_client', $context)) {
             $data['_link']['self'] = $this->router->generate('client_details', [
-                'id'=>$client->getId(),
+                'id' => $client->getId(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);
         }
 
-        if (in_array('client_details',$context)) {
+        if (in_array('client_details', $context)) {
             if ($this->security->isGranted('admin_client')) {
                 $data['_link']['update'] = $this->router->generate('update_client', [
-                    'id'=>$client->getId(),
+                    'id' => $client->getId(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
                 $data['_link']['delete'] = $this->router->generate('delete_client', [
-                    'id'=>$client->getId(),
+                    'id' => $client->getId(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
         }

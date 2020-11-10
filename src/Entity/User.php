@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Entity;
-
 
 use App\DTO\User\CreateUser\CreateUserFromFixture;
 use App\DTO\User\CreateUser\CreateUserFromRequestInput;
@@ -71,7 +69,7 @@ class User
     public function __construct(string $fullName, string $username, string $email, Client $client)
     {
         $this->id = Uuid::v4()->__toString();
-        $this->fullName= $fullName;
+        $this->fullName = $fullName;
         $this->username = $username;
         $this->email = $email;
         $this->client = $client;
@@ -108,9 +106,11 @@ class User
         return $this->client;
     }
 
-    public static function createUserFromRequest(CreateUserFromRequestInput $userDTO, ClientRepository $clientRepository)
-    {
-        $client=User::setClientWithId($userDTO->getClientId(), $clientRepository);
+    public static function createUserFromRequest(
+        CreateUserFromRequestInput $userDTO,
+        ClientRepository $clientRepository
+    ) {
+        $client = User::setClientWithId($userDTO->getClientId(), $clientRepository);
         return new self(
             $userDTO->fullName,
             $userDTO->username,
@@ -131,7 +131,7 @@ class User
 
     public static function setClientWithId(string $clientId, ClientRepository $clientRepository)
     {
-        if (! $clientRepository->findOneBy(['id' => $clientId])){
+        if (! $clientRepository->findOneBy(['id' => $clientId])) {
             throw new EntityNotFoundException(
                 'Client with the id: ' . $clientId . ' not found'
             );
@@ -139,7 +139,7 @@ class User
         /**
          * @var Client $client
          */
-        $client=$clientRepository->findOneBy(['id' => $clientId]);
+        $client = $clientRepository->findOneBy(['id' => $clientId]);
         return $client;
     }
 
